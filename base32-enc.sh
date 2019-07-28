@@ -5,11 +5,10 @@
     # String to ascii
     str2ascii () {
       str=$1;
-      list=($(echo $str|sed 's/\(.\)/\1 /g'));
       ascii_result='';
 
-      for element in "${list[@]}"; do
-        ascii_result+=$(printf "%d " "'$element");
+      for (( i=0; i<${#str}; i++ )); do
+        ascii_result+=$(printf "%d " "'${str:$i:1}");
         done
       echo "${ascii_result%?}";
     }
@@ -70,8 +69,8 @@ out=$(str2ascii $1)
 
 #
 val=$(for char in $out; do
-   echo ${ascii2bin[char]}
-done | tr '\012' ' ' | tr -d ' ')
+   echo -n ${ascii2bin[char]}
+done)
 
 #
 b1=$(echo ${val:0:5}); b2=$(echo ${val:5:5})
@@ -81,8 +80,8 @@ b7=$(echo ${val:30:5}); b8=$(echo ${val:35:5})
 
 #
 for b32 in $b1 $b2 $b3 $b4 $b5 $b6 $b7 $b8 ; do
-   echo ${bin2base32[$b32]}
-done  | tr -s ' ' | tr '\012' ' '
+   echo -n ${bin2base32[$b32]}
+done
 echo
 
 # => Answer in base32
