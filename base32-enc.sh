@@ -53,35 +53,38 @@
       # Associtive Arrary given 5 bit binary returns base32 symbol
       declare -A bin2base32
       bin2base32=(
-              [00000]=0 [00001]=1 [00010]=2 [00011]=3
-              [00100]=4 [00101]=5 [00110]=6 [00111]=7
-              [01000]=8 [01001]=9 [01010]=A [01011]=B
-              [01100]=C [01101]=D [01110]=E [01111]=F
-              [10000]=G [10001]=H [10010]=J [10011]=K
-              [10100]=M [10101]=N [10110]=P [10111]=Q
-              [11000]=R [11001]=S [11010]=T [11011]=V
-              [11100]=W [11101]=X [11110]=Y [11111]=Z
-            )
-      # as per http://www.crockford.com/wrmg/base32.html
+              [00000]=A [00001]=B [00010]=C [00011]=D
+              [00100]=E [00101]=F [00110]=G [00111]=H
+              [01000]=I [01001]=J [01010]=K [01011]=L
+              [01100]=M [01101]=N [01110]=O [01111]=P
+              [10000]=Q [10001]=R [10010]=S [10011]=T
+              [10100]=U [10101]=V [10110]=W [10111]=X
+              [11000]=Y [11001]=Z [11010]=2 [11011]=3
+              [11100]=4 [11101]=5 [11110]=6 [11111]=7
+             )
+      # as per https://tools.ietf.org/html/rfc4648#section-6
 
 # Must Provide Input $1
 in="$1"
 out=$(str2ascii "$in")
-padlength=$((8 - ${#in}%8))
-printf -v padding "%0${padlength}d" ""
 
 #
 val=$(for char in $out; do
    echo -n ${ascii2bin[char]}
 done)
+padlength=$((5 - ${#val}%5))
+printf -v padding "%0${padlength}d" ""
 val+=$padding
 
 #
+out=
 for (( i=0; i<${#val}; i+=5 )); do
    b32=${val:$i:5}
-   echo -n ${bin2base32[$b32]}
+   out+=${bin2base32[$b32]}
 done
-echo
+padding="========"
+padlength=$((8 - ${#out}%8))
+echo $out${padding:0:${padlength}}
 
 # => Answer in base32
 # -- fin # https://emn178.github.io/online-tools/base32_encode.html
