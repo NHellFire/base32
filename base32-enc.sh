@@ -65,21 +65,20 @@
       # as per http://www.crockford.com/wrmg/base32.html
 
 # Must Provide Input $1
-out=$(str2ascii "$1")
+in="$1"
+out=$(str2ascii "$in")
+padlength=$((8 - ${#in}%8))
+printf -v padding "%0${padlength}d" ""
 
 #
 val=$(for char in $out; do
    echo -n ${ascii2bin[char]}
 done)
+val+=$padding
 
 #
-b1=$(echo ${val:0:5}); b2=$(echo ${val:5:5})
-b3=$(echo ${val:10:5}); b4=$(echo ${val:15:5})
-b5=$(echo ${val:20:5}); b6=$(echo ${val:25:5})
-b7=$(echo ${val:30:5}); b8=$(echo ${val:35:5})
-
-#
-for b32 in $b1 $b2 $b3 $b4 $b5 $b6 $b7 $b8 ; do
+for (( i=0; i<${#val}; i+=5 )); do
+   b32=${val:$i:5}
    echo -n ${bin2base32[$b32]}
 done
 echo
