@@ -65,7 +65,7 @@
       # as per http://www.crockford.com/wrmg/base32.html
 
 # Must Provide Input $1
-out=$(str2ascii $1)
+out=$(str2ascii "$1")
 
 #
 val=$(for char in $out; do
